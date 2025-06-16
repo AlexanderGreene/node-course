@@ -1,6 +1,9 @@
 # Created by https://gitignore.org
 # Node.gitignore
 
+# Code Generated Files
+notes.json
+
 # Logs
 logs
 *.log
