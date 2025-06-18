@@ -4,6 +4,7 @@ const geocode = (address, callback) => {
 	const baseUrl = 'https://api.mapbox.com/search/geocode/v6/forward';
 	const queryParams = {
 		urlSafeAddress: encodeURIComponent(address),
+		// TODO: Don't store the api key here like this
 		apiKey: 'pk.eyJ1IjoiZ3JlZW5lYWxleGFuZGVyaiIsImEiOiJjbWMweGMwa2EwNnl5Mmpwcm90ajY1NXlrIn0.8qTd77EOuVwDOecxOOb5ZA',
 	};
 	const { urlSafeAddress, apiKey } = queryParams;

@@ -1,11 +1,23 @@
 const request = require('request');
 
 const forecast = (latitude, longitude, callback) => {
+	const baseUrl = 'http://api.weatherstack.com/current';
+	const queryParams = {
+		lat: latitude,
+		long: longitude,
+		// TODO: Don't store the api key here like this
+		apiKey: '7b549f097c520ee732a0581c5741fd39',
+	};
+	const { lat, long, apiKey } = queryParams;
 	const url =
-		'http://api.weatherstack.com/current?access_key=7b549f097c520ee732a0581c5741fd39&query=' +
-		encodeURIComponent(latitude) +
+		baseUrl +
+		'?access_key=' +
+		apiKey +
+		'&query=' +
+		lat +
 		',' +
-		encodeURIComponent(longitude) +
+		long +
+		// TODO: Make units configurable
 		'&units=f';
 
 	request({ url: url, json: true }, (error, response) => {
