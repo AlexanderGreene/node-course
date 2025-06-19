@@ -8,18 +8,25 @@ const geocode = (address, callback) => {
 		apiKey: 'pk.eyJ1IjoiZ3JlZW5lYWxleGFuZGVyaiIsImEiOiJjbWMweGMwa2EwNnl5Mmpwcm90ajY1NXlrIn0.8qTd77EOuVwDOecxOOb5ZA',
 	};
 	const { urlSafeAddress, apiKey } = queryParams;
+	//TODO: Make this url construction better
 	const url = baseUrl + '?q=' + urlSafeAddress + '&access_token=' + apiKey;
 
-	request({ url: url, json: true }, (error, response) => {
+	request({ url, json: true }, (error, { body }) => {
+		const { features } = body;
+		const [{ geometry, properties }] = features;
+		const { full_address: location } = properties;
+		const { coordinates } = geometry;
+		const latitude = coordinates[1];
+		const longitude = coordinates[0];
 		if (error) {
 			callback('Unable to connect to location services!', undefined);
-		} else if (response.body.features.length === 0) {
+		} else if (features.length === 0) {
 			callback('Unable to find location. Try another search.', undefined);
 		} else {
-			const coordinates = callback(undefined, {
-				latitude: response.body.features[0].geometry.coordinates[1],
-				longitude: response.body.features[0].geometry.coordinates[0],
-				location: response.body.features[0].properties.name,
+			callback(undefined, {
+				latitude,
+				longitude,
+				location,
 			});
 		}
 	});
