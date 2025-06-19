@@ -32,8 +32,8 @@ const forecast = (latitude, longitude, callback) => {
 		} else {
 			callback(undefined, {
 				description: response.body.current.weather_descriptions[0],
-				temperature: response.body.current.temperature,
-				feelslike: response.body.current.feelslike,
+				temperature: response.body.current.temperature + '\u00B0 F',
+				feelslike: response.body.current.feelslike + '\u00B0 F',
 			});
 		}
 	});
