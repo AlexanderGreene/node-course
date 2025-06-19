@@ -9,6 +9,7 @@ const forecast = (latitude, longitude, callback) => {
 		apiKey: '7b549f097c520ee732a0581c5741fd39',
 	};
 	const { lat, long, apiKey } = queryParams;
+	//TODO: Make this url construction better
 	const url =
 		baseUrl +
 		'?access_key=' +
@@ -20,20 +21,27 @@ const forecast = (latitude, longitude, callback) => {
 		// TODO: Make units configurable
 		'&units=f';
 
-	request({ url: url, json: true }, (error, response) => {
+	request({ url, json: true }, (error, { body }) => {
+		const { current } = body;
+		const {
+			weather_descriptions: descriptions,
+			temperature,
+			feelslike,
+		} = current;
+		const description = descriptions[0];
 		if (error) {
 			callback(
 				'Unable to connect to weather service. See error below for details.\n' +
 					error,
 				undefined
 			);
-		} else if (response.body.error) {
-			callback(response.body.error.info, undefined);
+		} else if (body.error) {
+			callback(body.error.info, undefined);
 		} else {
 			callback(undefined, {
-				description: response.body.current.weather_descriptions[0],
-				temperature: response.body.current.temperature + '\u00B0 F',
-				feelslike: response.body.current.feelslike + '\u00B0 F',
+				description,
+				temperature: temperature + '\u00B0 F',
+				feelslike: feelslike + '\u00B0 F',
 			});
 		}
 	});
