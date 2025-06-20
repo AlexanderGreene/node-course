@@ -65,15 +65,15 @@ app.get('/weather', (req, res) => {
 	const { query } = req;
 	if (!query.address) {
 		return res.send({
-			error: 'No address entered, please try again.',
+			error: 'No address entered. Please try again.',
 		});
 	}
-	geocode(query.address, (error, { latitude, longitude, location }) => {
+	geocode(query.address, (error, { latitude, longitude, location } = {}) => {
 		if (error) return res.send({ error });
 		forecast(
 			latitude,
 			longitude,
-			(error, { description, temperature, feelslike }) => {
+			(error, { description, temperature, feelslike } = {}) => {
 				if (error) return res.send({ error });
 				const { address } = query;
 				res.send({
@@ -86,15 +86,6 @@ app.get('/weather', (req, res) => {
 			}
 		);
 	});
-	// res.send({
-	// 	address: query.address,
-	// 	location: 'Columbus, Ohio, USA',
-	// 	forecast: {
-	// 		description: 'Overcast',
-	// 		temperature: 77,
-	// 		feelslike: 79,
-	// 	},
-	// });
 });
 
 // Demonstration endpoint (doesn't really do anything)
