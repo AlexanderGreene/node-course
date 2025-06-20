@@ -1,6 +1,8 @@
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
+const forecast = require('./utils/forecast');
+const geocode = require('./utils/geocode');
 
 console.log(__dirname);
 console.log(path.join(__dirname, '../public'));
@@ -66,15 +68,33 @@ app.get('/weather', (req, res) => {
 			error: 'No address entered, please try again.',
 		});
 	}
-	res.send({
-		address: query.address,
-		location: 'Columbus, Ohio, USA',
-		forecast: {
-			description: 'Overcast',
-			temperature: 77,
-			feelslike: 79,
-		},
+	geocode(query.address, (error, { latitude, longitude, location }) => {
+		if (error) return res.send({ error });
+		forecast(
+			latitude,
+			longitude,
+			(error, { description, temperature, feelslike }) => {
+				if (error) return res.send({ error });
+				const { address } = query;
+				res.send({
+					address,
+					location,
+					description,
+					temperature,
+					feelslike,
+				});
+			}
+		);
 	});
+	// res.send({
+	// 	address: query.address,
+	// 	location: 'Columbus, Ohio, USA',
+	// 	forecast: {
+	// 		description: 'Overcast',
+	// 		temperature: 77,
+	// 		feelslike: 79,
+	// 	},
+	// });
 });
 
 // Demonstration endpoint (doesn't really do anything)
