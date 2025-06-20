@@ -11,6 +11,7 @@ const app = express();
 const publicDirectoryPath = path.join(__dirname, '../public');
 const viewsPath = path.join(__dirname, '../templates/views');
 const partialsPath = path.join(__dirname, '../templates/partials');
+console.log(publicDirectoryPath, viewsPath, partialsPath);
 
 // enroll handlebars and views location into express
 app.set('view engine', 'hbs');
@@ -46,6 +47,17 @@ app.get('/help', (req, res) => {
 	});
 });
 
+// Commented out because it causes an error in path-to-regexp
+// Awaiting response from course instructor
+// app.get('/help/*', (req, res) => {
+// 	res.render('404', {
+// 		title: "404'd!",
+//		name: 'Alex Greene',
+// 		message:
+// 			"I couldn't find that help article!. Looks like you're on your own!",
+// 	});
+// });
+
 // app.com/weather
 app.get('/weather', (req, res) => {
 	res.send({
@@ -57,6 +69,16 @@ app.get('/weather', (req, res) => {
 		},
 	});
 });
+
+// Commented out because it causes an error in path-to-regexp
+// Awaiting response from course instructor
+// app.get('*', (req, res) => {
+// 	res.render('404', {
+// 		title: "404'd!",
+//		name: 'Alex Greene',
+// 		message: "I couldn't find the thing. Try another thing!",
+// 	});
+// });
 
 app.listen(3000, () => {
 	console.log('Server running on port 3000.');
