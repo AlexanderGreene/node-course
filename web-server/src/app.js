@@ -60,7 +60,14 @@ app.get('/help', (req, res) => {
 
 // app.com/weather
 app.get('/weather', (req, res) => {
+	const { query } = req;
+	if (!query.address) {
+		return res.send({
+			error: 'No address entered, please try again.',
+		});
+	}
 	res.send({
+		address: query.address,
 		location: 'Columbus, Ohio, USA',
 		forecast: {
 			description: 'Overcast',
@@ -69,6 +76,18 @@ app.get('/weather', (req, res) => {
 		},
 	});
 });
+
+// Demonstration endpoint (doesn't really do anything)
+// app.get('/products', (req, res) => {
+// 	if (!req.query.search) {
+// 		return res.send({
+// 			error: 'You must provide a search term!',
+// 		});
+// 	}
+// 	res.send({
+// 		products: [],
+// 	});
+// });
 
 // Commented out because it causes an error in path-to-regexp
 // Awaiting response from course instructor
