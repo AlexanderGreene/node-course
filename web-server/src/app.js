@@ -1,9 +1,8 @@
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
-
-console.log(__dirname);
-console.log(path.join(__dirname, '../public'));
+const forecast = require('./utils/forecast');
+const geocode = require('./utils/geocode');
 
 const app = express();
 
@@ -46,17 +45,66 @@ app.get('/help', (req, res) => {
 	});
 });
 
+// Commented out because it causes an error in path-to-regexp
+// Awaiting response from course instructor
+// app.get('/help/*', (req, res) => {
+// 	res.render('404', {
+// 		title: "404'd!",
+//		name: 'Alex Greene',
+// 		message:
+// 			"I couldn't find that help article!. Looks like you're on your own!",
+// 	});
+// });
+
 // app.com/weather
 app.get('/weather', (req, res) => {
-	res.send({
-		location: 'Columbus, Ohio, USA',
-		forecast: {
-			description: 'Overcast',
-			temperature: 77,
-			feelslike: 79,
-		},
+	const { query } = req;
+	if (!query.address) {
+		return res.send({
+			error: 'No address entered. Please try again.',
+		});
+	}
+	geocode(query.address, (error, { latitude, longitude, location } = {}) => {
+		if (error) return res.send({ error });
+		forecast(
+			latitude,
+			longitude,
+			(error, { description, temperature, feelslike } = {}) => {
+				if (error) return res.send({ error });
+				const { address } = query;
+				res.send({
+					address,
+					location,
+					description,
+					temperature,
+					feelslike,
+				});
+			}
+		);
 	});
 });
+
+// Demonstration endpoint (doesn't really do anything)
+// app.get('/products', (req, res) => {
+// 	if (!req.query.search) {
+// 		return res.send({
+// 			error: 'You must provide a search term!',
+// 		});
+// 	}
+// 	res.send({
+// 		products: [],
+// 	});
+// });
+
+// Commented out because it causes an error in path-to-regexp
+// Awaiting response from course instructor
+// app.get('*', (req, res) => {
+// 	res.render('404', {
+// 		title: "404'd!",
+//		name: 'Alex Greene',
+// 		message: "I couldn't find the thing. Try another thing!",
+// 	});
+// });
 
 app.listen(3000, () => {
 	console.log('Server running on port 3000.');
