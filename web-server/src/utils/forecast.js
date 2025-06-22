@@ -21,8 +21,8 @@ const forecast = (latitude, longitude, callback) => {
 		// TODO: Make units configurable
 		'&units=f';
 
-	request({ url, json: true }, (error, { body }) => {
-		const { current } = body;
+	request({ url, json: true }, (error, { body } = {}) => {
+		const { current, location } = body;
 		const {
 			weather_descriptions: descriptions,
 			temperature,
@@ -39,6 +39,7 @@ const forecast = (latitude, longitude, callback) => {
 			callback(body.error.info, undefined);
 		} else {
 			callback(undefined, {
+				location: body.location.name,
 				description,
 				temperature: temperature + '\u00B0 F',
 				feelslike: feelslike + '\u00B0 F',

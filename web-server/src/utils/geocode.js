@@ -11,22 +11,16 @@ const geocode = (address, callback) => {
 	//TODO: Make this url construction better
 	const url = baseUrl + '?q=' + urlSafeAddress + '&access_token=' + apiKey;
 
-	request({ url, json: true }, (error, { body }) => {
-		const { features } = body;
-		const [{ geometry, properties }] = features;
-		const { full_address: location } = properties;
-		const { coordinates } = geometry;
-		const latitude = coordinates[1];
-		const longitude = coordinates[0];
+	request({ url, json: true }, (error, { body } = {}) => {
 		if (error) {
 			callback('Unable to connect to location services!', undefined);
-		} else if (features.length === 0) {
+		} else if (body.features.length === 0) {
 			callback('Unable to find location. Try another search.', undefined);
 		} else {
 			callback(undefined, {
-				latitude,
-				longitude,
-				location,
+				latitude: body.features[0].geometry.coordinates[1],
+				longitude: body.features[0].geometry.coordinates[0],
+				location: body.features[0].properties.full_address,
 			});
 		}
 	});

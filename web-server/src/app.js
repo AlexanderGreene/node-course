@@ -4,16 +4,12 @@ const hbs = require('hbs');
 const forecast = require('./utils/forecast');
 const geocode = require('./utils/geocode');
 
-console.log(__dirname);
-console.log(path.join(__dirname, '../public'));
-
 const app = express();
 
 // define paths for Express config
 const publicDirectoryPath = path.join(__dirname, '../public');
 const viewsPath = path.join(__dirname, '../templates/views');
 const partialsPath = path.join(__dirname, '../templates/partials');
-console.log(publicDirectoryPath, viewsPath, partialsPath);
 
 // enroll handlebars and views location into express
 app.set('view engine', 'hbs');
