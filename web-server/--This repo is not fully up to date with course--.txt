@@ -1,0 +1,3 @@
+To deploy this repo to heroku, the repo was copied and the fully completed repo can be found at ~Source/repos/greene-weather-app
+
+This repo will work locally, but is not fully fleshed out as some of the changes were made after the deployment repo was split off.
