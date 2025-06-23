@@ -12,6 +12,7 @@ const message = document.querySelector('#message');
 
 weatherForm.addEventListener('submit', (e) => {
 	e.preventDefault();
+	message.textContent = 'Loading...';
 	const location = searchEle.value;
 	fetch('http://localhost:3000/weather?address=' + location).then(
 		(response) => {

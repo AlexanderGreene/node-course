@@ -45,18 +45,16 @@ app.get('/help', (req, res) => {
 	});
 });
 
-// Commented out because it causes an error in path-to-regexp
-// Awaiting response from course instructor
-// app.get('/help/*', (req, res) => {
-// 	res.render('404', {
-// 		title: "404'd!",
-//		name: 'Alex Greene',
-// 		message:
-// 			"I couldn't find that help article!. Looks like you're on your own!",
-// 	});
-// });
+app.get('/help/*', (req, res) => {
+	res.render('404', {
+		title: "404'd!",
+		name: 'Alex Greene',
+		message:
+			"I couldn't find that help article!. Looks like you're on your own!",
+	});
+});
 
-// app.com/weather
+// app.com/weather;
 app.get('/weather', (req, res) => {
 	const { query } = req;
 	if (!query.address) {
@@ -96,15 +94,13 @@ app.get('/weather', (req, res) => {
 // 	});
 // });
 
-// Commented out because it causes an error in path-to-regexp
-// Awaiting response from course instructor
-// app.get('*', (req, res) => {
-// 	res.render('404', {
-// 		title: "404'd!",
-//		name: 'Alex Greene',
-// 		message: "I couldn't find the thing. Try another thing!",
-// 	});
-// });
+app.get('*', (req, res) => {
+	res.render('404', {
+		title: "404'd!",
+		name: 'Alex Greene',
+		message: "I couldn't find the thing. Try another thing!",
+	});
+});
 
 app.listen(3000, () => {
 	console.log('Server running on port 3000.');
