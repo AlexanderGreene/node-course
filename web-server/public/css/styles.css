@@ -9,11 +9,27 @@ body {
 	padding: 0 16px;
 }
 
+button {
+	cursor: pointer;
+	border: 1px solid #888888;
+	background: #888888;
+	color: white;
+	padding: 8px;
+	border-radius: 4px;
+}
+
 footer {
 	border-top: 1px solid #eeeeee;
 	color: #888888;
 	margin-top: 16px;
 	padding: 16px 0;
+}
+
+input {
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	padding: 8px;
 }
 
 h1 {
