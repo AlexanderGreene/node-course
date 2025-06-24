@@ -19,18 +19,19 @@ MongoClient.connect(
 		const db = client.db(databaseName);
 
 		// Since MongoDB Compass won't work on my machine I need to log all the entries to see collections
-		db.collection('users')
-			.find()
-			.toArray((error, results) => {
-				if (error) return console.error(error);
-				console.log(results);
-			});
-		db.collection('tasks')
-			.find()
-			.toArray((error, results) => {
-				if (error) return console.error(error);
-				console.log(results);
-			});
+		// Uncomment to see these collections
+		// db.collection('users')
+		// 	.find()
+		// 	.toArray((error, results) => {
+		// 		if (error) return console.error(error);
+		// 		console.log(results);
+		// 	});
+		// db.collection('tasks')
+		// 	.find()
+		// 	.toArray((error, results) => {
+		// 		if (error) return console.error(error);
+		// 		console.log(results);
+		// 	});
 	}
 );
 // The below function calls will run when we run the script and populate their associated collection
