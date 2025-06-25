@@ -14,10 +14,13 @@ const User = mongoose.model('User', {
 	name: {
 		type: String,
 		required: true,
+		trim: true,
 	},
 	email: {
 		type: String,
 		required: true,
+		trim: true,
+		lowercase: true,
 		validate(value) {
 			if (!validator.isEmail(value)) {
 				throw new Error('Email is invalid.');
@@ -26,10 +29,23 @@ const User = mongoose.model('User', {
 	},
 	age: {
 		type: Number,
+		default: 0,
 		validate(value) {
 			if (value < 0) {
 				throw new Error('Age must not be negative.');
 			}
+		},
+	},
+	password: {
+		type: String,
+		required: true,
+		minlength: 7,
+		trim: true,
+		validate(value) {
+			if (value.toLowerCase().includes('password'))
+				throw new Error(
+					'Come on bud...You can think of a better password than that.'
+				);
 		},
 	},
 });
@@ -37,24 +53,28 @@ const User = mongoose.model('User', {
 const Task = mongoose.model('Task', {
 	description: {
 		type: String,
+		required: true,
+		trim: true,
 	},
 	completed: {
 		type: Boolean,
+		default: false,
 	},
 });
 
 const me = new User({
-	name: 'Alex',
-	email: 'dontemailmehere@email.com',
-	age: 38,
+	name: 'Devon',
+	email: 'notreallydevon@email.com',
+	age: 44,
+	password: 'nicePaSsWoRd',
 });
 
 const it = new Task({
-	description: 'Do it',
+	description: 'Do it! Seriously!',
 	completed: false,
 });
 
-// uncomment this and switch the require/import statements to view collections
+// uncomment this and switch the require/import statements to view collections without Compass
 // const usersQuery = await User.find().exec();
 // const tasksQuery = await Task.find().exec();
 
