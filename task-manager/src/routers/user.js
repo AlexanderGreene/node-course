@@ -14,6 +14,8 @@ router.post('/users', async (req, res) => {
 	}
 });
 
+router.post('/users/login', async (req, res) => {});
+
 router.get('/users', async (req, res) => {
 	try {
 		const users = await User.find({});
@@ -48,12 +50,21 @@ router.patch('/users/:id', async (req, res) => {
 
 	const _id = req.params.id;
 	try {
-		const user = await User.findByIdAndUpdate(_id, req.body, {
-			new: true,
-			runValidators: true,
-		});
+		const user = await User.findById(req.params.id);
+
+		// If we didn't need to run middleware on updates we could do it this way
+		// const user = await User.findByIdAndUpdate(_id, req.body, {
+		// 	new: true,
+		// 	runValidators: true,
+		// });
+
 		if (!user)
 			return res.status(404).send(`User with id ${_id} not found.`);
+
+		updates.forEach((update) => (user[update] = req.body[update]));
+
+		await user.save();
+
 		res.send(user);
 	} catch (e) {
 		res.status(500).send(e);
