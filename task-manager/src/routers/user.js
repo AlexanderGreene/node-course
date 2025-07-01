@@ -1,4 +1,5 @@
 const express = require('express');
+const auth = require('../middleware/auth');
 const User = require('../models/user');
 
 const router = new express.Router();
@@ -29,14 +30,21 @@ router.post('/users/login', async (req, res) => {
 	}
 });
 
-router.get('/users', async (req, res) => {
-	try {
-		const users = await User.find({});
-		if (users.length === 0) return res.status(404).send('No users found.');
-		res.send(users);
-	} catch (e) {
-		res.status(500).send(e);
-	}
+// logged in users should not be able to get every single user in the db
+// commented out as an example, but could be turned into an admin function
+// if roles are introduced
+// router.get('/users', auth, async (req, res) => {
+// 	try {
+// 		const users = await User.find({});
+// 		if (users.length === 0) return res.status(404).send('No users found.');
+// 		res.send(users);
+// 	} catch (e) {
+// 		res.status(500).send(e);
+// 	}
+// });
+
+router.get('/users/me', auth, async (req, res) => {
+	res.send(req.user);
 });
 
 router.get('/users/:id', async (req, res) => {
