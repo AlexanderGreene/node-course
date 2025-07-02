@@ -33,6 +33,21 @@ app.listen(port, () => {
 	console.log('Server running on port ' + port);
 });
 
+// Use populate to pull in task/user relationship data
+// const Task = require('./models/task');
+// const User = require('./models/user');
+
+// const main = async () => {
+// 	const task = await Task.findById('68656eb725f738c8245958a4');
+// 	await task.populate('owner');
+// 	console.log(task.owner);
+// 	const user = await User.findById('6863e5fc6323b9de911cec3d');
+// 	await user.populate('tasks');
+// 	console.log(user.tasks);
+// };
+
+// main();
+
 // setting up endpoints via app.<method> without express.Router
 // routes listed here have been moved to files in router directory
 // USERS

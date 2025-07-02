@@ -84,11 +84,22 @@ router.patch('/users/me', auth, async (req, res) => {
 	}
 });
 
+// Drop the database without MongoDB Compass or similar GUI
+// router.delete('/users/db', auth, async (req, res) => {
+// 	try {
+// 		User.collection.drop();
+// 		res.send();
+// 	} catch (e) {
+// 		res.status(500).send(e);
+// 	}
+// });
+
 router.delete('/users/me', auth, async (req, res) => {
 	try {
-		await req.user.remove();
+		await req.user.deleteOne();
 		res.send(req.user);
 	} catch (e) {
+		console.log(e);
 		res.status(500).send(e);
 	}
 });

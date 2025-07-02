@@ -3,53 +3,66 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const userSchema = new mongoose.Schema({
-	name: {
-		type: String,
-		required: true,
-		trim: true,
-	},
-	email: {
-		type: String,
-		required: true,
-		unique: true,
-		trim: true,
-		lowercase: true,
-		validate(value) {
-			if (!validator.isEmail(value)) {
-				throw new Error('Email is invalid.');
-			}
+const Task = require('./task');
+
+const userSchema = new mongoose.Schema(
+	{
+		name: {
+			type: String,
+			required: true,
+			trim: true,
 		},
-	},
-	age: {
-		type: Number,
-		default: 0,
-		validate(value) {
-			if (value < 0) {
-				throw new Error('Age must not be negative.');
-			}
-		},
-	},
-	password: {
-		type: String,
-		required: true,
-		minlength: 7,
-		trim: true,
-		validate(value) {
-			if (value.toLowerCase().includes('password'))
-				throw new Error(
-					'Come on bud...You can think of a better password than that.'
-				);
-		},
-	},
-	tokens: [
-		{
-			token: {
-				type: String,
-				required: true,
+		email: {
+			type: String,
+			required: true,
+			unique: true,
+			trim: true,
+			lowercase: true,
+			validate(value) {
+				if (!validator.isEmail(value)) {
+					throw new Error('Email is invalid.');
+				}
 			},
 		},
-	],
+		age: {
+			type: Number,
+			default: 0,
+			validate(value) {
+				if (value < 0) {
+					throw new Error('Age must not be negative.');
+				}
+			},
+		},
+		password: {
+			type: String,
+			required: true,
+			minlength: 7,
+			trim: true,
+			validate(value) {
+				if (value.toLowerCase().includes('password'))
+					throw new Error(
+						'Come on bud...You can think of a better password than that.'
+					);
+			},
+		},
+		tokens: [
+			{
+				token: {
+					type: String,
+					required: true,
+				},
+			},
+		],
+	},
+	{
+		timestamps: true,
+	}
+);
+
+userSchema.virtual('tasks', {
+	ref: 'Task',
+	localField: '_id',
+	foreignField: 'owner',
 });
 
 userSchema.methods.generateAuthToken = async function () {
@@ -93,6 +106,19 @@ userSchema.pre('save', async function (next) {
 
 	if (user.isModified('password')) {
 		user.password = await bcrypt.hash(user.password, 8);
+	}
+
+	next();
+});
+
+// Delete user tasks when user is removed
+userSchema.pre('remove', async function (next) {
+	const user = this;
+
+	try {
+		await Task.deleteMany({ owner: user._id });
+	} catch (e) {
+		console.log(e);
 	}
 
 	next();
