@@ -66,6 +66,65 @@ app.listen(port, () => {
 // 	}
 // );
 
+app.use(express.json());
+app.use(userRouter);
+app.use(taskRouter);
+
+app.listen(port, () => {
+	console.log('Server running on port ' + port);
+});
+
+// Saving removed code blocks for posterity
+// const upload = multer({
+// 	dest: 'images',
+// 	limits: {
+// 		fileSize: 1000000, // Number of bytes
+// 	},
+// 	fileFilter(req, file, cb) {
+// 		if (!file.originalname.match(/\.(doc|docx)$/)) {
+// 			return cb(
+// 				new Error("Please upload a Word document. I'm begging you.")
+// 			);
+// 		}
+
+// 		cb(undefined, true);
+
+// 3 ways to use cb arg
+// send an error
+// cb(new Error('File must be a pdf or whatever'))
+// success
+// cb(undefined, true)
+// silent failure
+// cb(undefined, false)
+// 	},
+// });
+
+// const errorMiddleware = (req, res, next) => {
+// 	throw new Error('From my middleware');
+// };
+
+// app.post(
+// 	'/upload',
+// 	errorMiddleware,
+// 	(req, res) => {
+// 		res.send();
+// 	},
+// 	(error, req, res, next) => {
+// 		res.status(400).send({ error: error.message });
+// 	}
+// );
+
+// app.post(
+// 	'/upload',
+// 	upload.single('upload'),
+// 	(req, res) => {
+// 		res.send();
+// 	},
+// 	(error, req, res, next) => {
+// 		res.status(400).send({ error: error.message });
+// 	}
+// );
+
 //
 // Without middleware: new request -> run route handler
 //
