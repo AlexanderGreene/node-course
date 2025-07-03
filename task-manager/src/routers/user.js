@@ -1,9 +1,27 @@
 const express = require('express');
+const multer = require('multer');
+const sharp = require('sharp');
 const auth = require('../middleware/auth');
 const User = require('../models/user');
 
 const router = new express.Router();
+const uploadAvatar = multer({
+	// dest: 'avatars', -- saves the uploaded file directly to the file system
+	// this is not ideal since deployment services require completely replacing
+	// all files when deploying, so user avatars would be wiped every deployment
+	limits: {
+		fileSize: 1000000,
+	},
+	fileFilter(req, file, cb) {
+		if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+			return cb(new Error("Please upload an image. I'm begging you."));
+		}
 
+		cb(undefined, true);
+	},
+});
+
+// POST
 router.post('/users', async (req, res) => {
 	const user = new User(req.body);
 
@@ -53,10 +71,50 @@ router.post('/users/logoutAll', auth, async (req, res) => {
 	}
 });
 
+//
+router.post(
+	'/users/me/avatar',
+	auth,
+	uploadAvatar.single('avatar'),
+	async (req, res) => {
+		// req.user.avatar = req.file.buffer; -- saves image binary to db. accessible in HTML with <img src="data:image/*file type*>;base64,*binary string*">
+		const buffer = await sharp(req.file.buffer)
+			.png()
+			.resize({
+				width: 250,
+				height: 250,
+			})
+			.toBuffer();
+		req.user.avatar = buffer;
+		await req.user.save();
+		res.send();
+	},
+	(error, req, res, next) => {
+		res.status(400).send({ error: error.message });
+	}
+);
+
+// GET
 router.get('/users/me', auth, async (req, res) => {
 	res.send(req.user);
 });
 
+router.get('/users/:id/avatar', async (req, res) => {
+	try {
+		const user = await User.findById(req.params.id);
+
+		if (!user || !user.avatar) {
+			return res.status(404).send({ error: 'Avatar not found' });
+		}
+
+		res.set('Content-type', 'image/png');
+		res.send(user.avatar);
+	} catch (e) {
+		res.status(500).send();
+	}
+});
+
+// PATCH
 router.patch('/users/me', auth, async (req, res) => {
 	const updates = Object.keys(req.body);
 	const allowedUpdates = ['name', 'email', 'password', 'age'];
@@ -84,6 +142,7 @@ router.patch('/users/me', auth, async (req, res) => {
 	}
 });
 
+// DELETE
 // Drop the database without MongoDB Compass or similar GUI
 // router.delete('/users/db', auth, async (req, res) => {
 // 	try {
@@ -93,6 +152,23 @@ router.patch('/users/me', auth, async (req, res) => {
 // 		res.status(500).send(e);
 // 	}
 // });
+
+router.delete(
+	'/users/me/avatar',
+	auth,
+	async (req, res) => {
+		if (!req.user.avatar)
+			return res
+				.status(404)
+				.send({ error: 'User does not have an avatar.' });
+		req.user.avatar = undefined;
+		await req.user.save();
+		res.send();
+	},
+	(error, req, res, next) => {
+		res.status(500).send({ error: error.message });
+	}
+);
 
 router.delete('/users/me', auth, async (req, res) => {
 	try {
