@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 // import mongoose from 'mongoose';
 
-mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
+mongoose.connect(process.env.MONGODB_URL, {
 	// deprecated connection options, but were used in the class. leaving for posterity
 	// useNewUrlParser: true,
 	// useCreateIndex: true,
