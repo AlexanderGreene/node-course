@@ -1,18 +1,29 @@
-const express = require('express');
 const path = require('path');
+const http = require('http');
+const express = require('express');
+const socketio = require('socket.io');
+const serverRunning = require('./serverRunning');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketio(server);
+
 const port = process.env.PORT || 3000;
 
 const publicDirectoryPath = path.join(__dirname, '../public');
 
 app.use(express.static(publicDirectoryPath));
 
+io.on('connection', () => {
+	console.log('New WebSocket connection');
+});
+
 // app.com
 app.get('', (req, res) => {
 	res.render('index');
 });
 
-app.listen(port, () => {
-	console.log('Server running on port ' + port + '.');
+server.listen(port, () => {
+	console.log(serverRunning);
+	console.log('Server running on port ' + port + '!');
 });
