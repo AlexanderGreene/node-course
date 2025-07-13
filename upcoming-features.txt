@@ -1,0 +1,5 @@
+Weather app-allow user to use geolocation api to get weather for their location
+
+Task app-Allow users to upload images for individual todos
+
+Chat app-Allow users to pick from a list of active rooms or type in custom room name
